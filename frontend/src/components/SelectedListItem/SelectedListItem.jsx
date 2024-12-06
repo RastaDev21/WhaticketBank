@@ -16,7 +16,7 @@ export default function SelectedListItem() {
   };
 
   return (
-    <Box sx={{ width: "308px", height: "610px" }}>
+    <Box sx={{ width: "308px", height: "610px", padding: "16px" }}>
       <List component="nav" aria-label="main mailbox folders">
         <ListItemButton
           selected={selectedIndex === 0}
@@ -54,7 +54,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -65,7 +65,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 1}
           onClick={event => handleListItemClick(event, 1)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -97,7 +97,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -140,7 +140,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -151,7 +151,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -183,7 +183,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -194,7 +194,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -241,7 +241,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -252,7 +252,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -284,7 +284,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -295,7 +295,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -327,7 +327,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -338,7 +338,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -370,7 +370,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -381,7 +381,7 @@ export default function SelectedListItem() {
           selected={selectedIndex === 0}
           onClick={event => handleListItemClick(event, 0)}
         >
-          <ListItemIcon sx={{ marginLeft: "16px" }}>
+          <ListItemIcon>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -413,7 +413,7 @@ export default function SelectedListItem() {
         <Box display="flex" justifyContent="center">
           <Divider
             sx={{
-              width: "244px",
+              width: "100%",
               height: "1px",
               backgroundColor: "#E8E8F0",
             }}
@@ -456,7 +456,7 @@ export default function SelectedListItem() {
       <Box display="flex" justifyContent="center">
         <Divider
           sx={{
-            width: "244px",
+            width: "100%",
             height: "1px",
             backgroundColor: "#E8E8F0",
           }}

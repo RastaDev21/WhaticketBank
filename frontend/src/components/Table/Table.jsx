@@ -24,16 +24,6 @@ const rows = [
 
 export default function TransactionTable() {
   return (
-    // <Box
-    //   sx={{
-    //     width: "1400px",
-    //     height: "440px",
-    //     borderRadius: "10px",
-    //     background: "#FFF",
-    //     boxShadow: "0px 4px 23px -1px rgba(0, 0, 0, 0.10)",
-    //     overflow: "hidden",
-    //   }}
-    // >
     <TableContainer
       component={Paper}
       sx={{

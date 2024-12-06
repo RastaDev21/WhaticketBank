@@ -15,7 +15,7 @@ export function Details() {
     <Stack spacing={2}>
       <ResponsiveAppBar />
 
-      <Box display="flex" gap={2} padding={"40px"}>
+      <Box display="flex" gap={"30px"} padding={"40px"}>
         <Box
           sx={{
             width: "308px",
@@ -31,12 +31,7 @@ export function Details() {
         </Box>
 
         <Box display="flex" flexDirection="column" flexGrow={1} gap={2}>
-          <Box
-            display="flex"
-            gap="400px"
-            marginLeft={"100px"}
-            marginBottom={"20px"}
-          >
+          <Box display="flex" gap="600px" marginBottom={"20px"}>
             <Box
               sx={{
                 width: "289px",

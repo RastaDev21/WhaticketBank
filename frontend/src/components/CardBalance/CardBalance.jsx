@@ -13,8 +13,8 @@ export default function BasicCard() {
         borderRadius: "10px",
         background: "#FFF",
         boxShadow: "0px 0px 23px -1px rgba(50, 50, 50, 0.10)",
-        padding: "25px",
-        marginRight: "80px",
+        // padding: "25px",
+        // marginRight: "80px",
       }}
     >
       <CardContent>
@@ -23,8 +23,9 @@ export default function BasicCard() {
             display: "flex",
             alignItems: "center",
             justifyContent: "start",
-            gap: 1,
+            gap: "20px",
             marginBottom: 1,
+            marginLeft: "50px",
           }}
         >
           <svg
@@ -42,8 +43,9 @@ export default function BasicCard() {
 
           <Typography
             sx={{
-              color: "text.secondary",
+              color: "color: #000",
               fontSize: "14px",
+              marginTop: "5px",
             }}
           >
             Saldo disponível
@@ -56,6 +58,7 @@ export default function BasicCard() {
             alignItems: "center",
             justifyContent: "start",
             gap: 1,
+            marginLeft: "50px",
           }}
         >
           <svg
@@ -72,8 +75,9 @@ export default function BasicCard() {
             // variant="h5"
             // component="div"
             sx={{
-              fontSize: "25px",
+              fontSize: "40px",
               fontWeight: "700",
+              textAlign: "center",
             }}
           >
             R$ 3.968,32
