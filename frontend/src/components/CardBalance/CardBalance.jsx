@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import { api } from "../../services/api";
 
 export default function BasicCard() {
+  const [balance, setBalance] = useState([]);
+  const [newBalance, setNewBalance] = useState("");
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get("/accounts/balance");
+        setBalance(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar balance:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
+
   return (
     <Card
       sx={{
@@ -13,8 +29,6 @@ export default function BasicCard() {
         borderRadius: "10px",
         background: "#FFF",
         boxShadow: "0px 0px 23px -1px rgba(50, 50, 50, 0.10)",
-        // padding: "25px",
-        // marginRight: "80px",
       }}
     >
       <CardContent>
@@ -80,7 +94,10 @@ export default function BasicCard() {
               textAlign: "center",
             }}
           >
-            R$ 3.968,32
+            {Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(balance)}
           </Typography>
         </Box>
       </CardContent>

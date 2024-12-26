@@ -77,6 +77,5 @@ export default function TransactionTable() {
         </TableBody>
       </Table>
     </TableContainer>
-    // </Box>
   );
 }

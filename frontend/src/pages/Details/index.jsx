@@ -1,5 +1,6 @@
 import "./styles.css";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
@@ -46,9 +47,17 @@ export function Details() {
             </Box>
 
             <Box display="flex" gap="80px">
-              <CardDeposit />
-              <CardTransfer />
-              <CardWithdraw />
+              <Link to="/add" style={{ textDecoration: "none" }}>
+                <CardDeposit />
+              </Link>
+
+              <Link to="/transfer" style={{ textDecoration: "none" }}>
+                <CardTransfer />
+              </Link>
+
+              <Link to="/withdraw" style={{ textDecoration: "none" }}>
+                <CardWithdraw />
+              </Link>
             </Box>
           </Box>
 

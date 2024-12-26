@@ -64,7 +64,7 @@ export function TransferMoney() {
 
             <Box display="flex" gap="80px">
               <CardDeposit />
-              <CardTransfer />
+              <CardTransfer isActive={true} />
               <CardWithdraw />
             </Box>
           </Box>
@@ -103,7 +103,7 @@ export function TransferMoney() {
           />
           <Button
             variant="contained"
-            onClick={handleOpenSuccessModal} // Troque para handleOpenSuccessModal conforme necessário
+            onClick={handleOpenErrorModal} // Troque para handleOpenSuccessModal conforme necessário
             sx={{
               width: "300px",
               height: "50px",

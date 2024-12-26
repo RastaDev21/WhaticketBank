@@ -25,17 +25,6 @@ const theme = createTheme({
       blueTable2: "rgba(255, 255, 255, 1)",
     },
   },
-  // typography: {
-  //   fontFamily: "'Roboto', 'Arial', sans-serif",
-  //   h1: {
-  //     fontSize: "2rem",
-  //     fontWeight: 700,
-  //   },
-  //   body1: {
-  //     fontSize: "1rem",
-  //     color: "rgb(255, 255, 255)",
-  //   },
-  // },
 });
 
 export default theme;

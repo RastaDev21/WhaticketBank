@@ -54,7 +54,7 @@ export function AddMoney() {
             </Box>
 
             <Box display="flex" gap="80px">
-              <CardDeposit isAddMoneyPage={true} />
+              <CardDeposit isActive={true} />
               <CardTransfer />
               <CardWithdraw />
             </Box>

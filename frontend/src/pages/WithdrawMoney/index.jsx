@@ -64,8 +64,8 @@ export function WithdrawMoney() {
 
             <Box display="flex" gap="80px">
               <CardDeposit />
-              <CardTransfer isTransferPage={true} />
-              <CardWithdraw isWithdrawPage={true} />
+              <CardTransfer />
+              <CardWithdraw isActive={true} />
             </Box>
           </Box>
 

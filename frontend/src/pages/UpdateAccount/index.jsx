@@ -1,4 +1,6 @@
 import "./styles.css";
+import { useState } from "react";
+import { useAuth } from "../../hooks/auth";
 import * as React from "react";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import SelectedListItem from "../../components/SelectedListItem";
@@ -11,10 +13,33 @@ import { styled, css } from "@mui/system";
 import Modal from "@mui/material/Modal";
 
 export function UpdateAccount() {
-  const [open, setOpen] = React.useState(false);
+  const { user, updateProfile } = useAuth();
 
+  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [name, setName] = useState(user.name);
+  // const [email, setEmail] = useState(user.email);
+  const [Rg, setRg] = useState(user.Rg);
+  const [Cpf, setCpf] = useState(user.Cpf);
+  const [data_de_nascimento, setData_de_nascimento] = useState(
+    user.data_de_nascimento
+  );
+  const [passwordOld, setPasswordOld] = useState();
+  const [passwordNew, setPasswordNew] = useState();
+
+  async function handleUpdate() {
+    const user = {
+      name,
+      Rg,
+      Cpf,
+      data_de_nascimento,
+      password: passwordNew,
+      old_password: passwordOld,
+    };
+    await updateProfile({ user });
+  }
 
   return (
     <Stack spacing={2}>
@@ -61,26 +86,33 @@ export function UpdateAccount() {
               id="outlined-required"
               label="Nome completo"
               sx={{
-                width: "650px",
+                width: "750px",
                 marginRight: "50px",
               }}
+              value={name}
+              onChange={e => setName(e.target.value)}
             />
-            <TextField
+            {/* <TextField
               id="outlined-required"
               label="Email"
               sx={{
                 width: "400px",
               }}
-            />
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            /> */}
           </Box>
           <Box>
             <TextField
               id="outlined-required"
               label="CPF"
               sx={{
-                width: "300px",
+                width: "350px",
                 marginRight: "50px",
               }}
+              disabled
+              value={Cpf}
+              onChange={e => setCpf(e.target.value)}
             />
             <TextField
               id="outlined-required"
@@ -89,13 +121,19 @@ export function UpdateAccount() {
                 width: "350px",
                 marginRight: "50px",
               }}
+              disabled
+              value={Rg}
+              onChange={e => setRg(e.target.value)}
             />
             <TextField
               id="outlined-required"
               label="Data de nascimento"
               sx={{
-                width: "350px",
+                width: "300px",
               }}
+              disabled
+              value={data_de_nascimento}
+              onChange={e => setData_de_nascimento(e.target.value)}
             />
           </Box>
 
@@ -117,7 +155,7 @@ export function UpdateAccount() {
           <Box>
             <TextField
               id="outlined-password-input"
-              label="Password"
+              label="Senha atual"
               type="password"
               autoComplete="current-password"
               sx={{
@@ -125,7 +163,21 @@ export function UpdateAccount() {
                 marginRight: "50px",
                 marginBottom: "30px",
               }}
+              onChange={e => setPasswordOld(e.target.value)}
             />
+            <TextField
+              id="outlined-password-input"
+              label="Nova senha"
+              type="password"
+              autoComplete="current-password"
+              sx={{
+                width: "750px",
+                marginRight: "50px",
+                marginBottom: "30px",
+              }}
+              onChange={e => setPasswordNew(e.target.value)}
+            />
+
             <Button
               variant="contained"
               sx={{
@@ -142,8 +194,9 @@ export function UpdateAccount() {
                   backgroundColor: "rgba(9, 9, 9, 0.438)",
                 },
               }}
+              onClick={handleUpdate}
             >
-              Alterar Senha
+              Salvar
             </Button>
           </Box>
 

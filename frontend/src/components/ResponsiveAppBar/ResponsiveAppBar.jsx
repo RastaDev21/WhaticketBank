@@ -5,8 +5,19 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import { WhaticketMark } from "../WhaticketMark/WhaticketMark";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useAuth } from "../../hooks/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function ResponsiveAppBar() {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    signOut();
+    navigate("/");
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -53,11 +64,20 @@ export default function ResponsiveAppBar() {
               fontSize: "14px",
               fontStyle: "normal",
               fontWeight: 400,
-              marginRight: "40px",
+              marginRight: "60px",
             }}
           >
             Número da conta: 3454
           </Typography>
+          <LogoutIcon
+            sx={{
+              color: "#FFF",
+              marginRight: "60px",
+              cursor: "pointer",
+              fontSize: "30px",
+            }}
+            onClick={handleLogout}
+          />
         </Toolbar>
       </AppBar>
     </Box>
