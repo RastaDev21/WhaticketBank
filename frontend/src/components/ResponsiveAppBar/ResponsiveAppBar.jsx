@@ -8,9 +8,11 @@ import { WhaticketMark } from "../WhaticketMark/WhaticketMark";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../../hooks/auth";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { api } from "../../services/api";
 
 export default function ResponsiveAppBar() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -67,7 +69,7 @@ export default function ResponsiveAppBar() {
               marginRight: "60px",
             }}
           >
-            Número da conta: 3454
+            Número da conta: {user.accountsId || "Carregando..."}
           </Typography>
           <LogoutIcon
             sx={{

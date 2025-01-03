@@ -5,22 +5,8 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { api } from "../../services/api";
 
-export default function BasicCard() {
-  const [balance, setBalance] = useState([]);
-  const [newBalance, setNewBalance] = useState("");
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const response = await api.get("/accounts/balance");
-        setBalance(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar balance:", error);
-      }
-    };
-    fetchBalance();
-  }, []);
-
+export default function CardBalance({ balance }) {
+  console.log("🚀 ~ balance:", balance);
   return (
     <Card
       sx={{
@@ -86,8 +72,6 @@ export default function BasicCard() {
           </svg>
 
           <Typography
-            // variant="h5"
-            // component="div"
             sx={{
               fontSize: "40px",
               fontWeight: "700",

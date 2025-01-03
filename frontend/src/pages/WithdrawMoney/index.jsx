@@ -1,5 +1,6 @@
 import "./styles.css";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import SelectedListItem from "../../components/SelectedListItem";
 import Stack from "@mui/material/Stack";
@@ -9,14 +10,18 @@ import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import Modal from "@mui/material/Modal";
-import Card from "../../components/CardBalance";
+import CardBalance from "../../components/CardBalance";
 import CardDeposit from "../../components/CardDeposit";
 import CardTransfer from "../../components/CardTransfer";
 import CardWithdraw from "../../components/CardWithdraw";
+import { api } from "../../services/api";
+import { useState, useEffect } from "react";
 
 export function WithdrawMoney() {
   const [isSuccessModalOpen, setSuccessModalOpen] = React.useState(false);
   const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
+  const [withdrawValue, setWithdrawValue] = React.useState("");
+  const [balance, setBalance] = useState([]);
 
   const handleOpenSuccessModal = () => setSuccessModalOpen(true);
   const handleCloseSuccessModal = () => setSuccessModalOpen(false);
@@ -27,6 +32,40 @@ export function WithdrawMoney() {
   const handleAddMoney = () => {
     console.log("Redirecionar para a página de adicionar saldo");
     setErrorModalOpen(false);
+  };
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get("/accounts/balance");
+        setBalance(response.data.balance);
+      } catch (error) {
+        console.error("Erro ao buscar saldo:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
+
+  const handleWithdrawMoney = async () => {
+    if (!withdrawValue || Number(withdrawValue) <= 0) {
+      handleOpenErrorModal();
+      return;
+    }
+
+    try {
+      await api.post("/accounts/removeMoney", {
+        value: Number(withdrawValue),
+      });
+      setBalance(prev => prev - Number(withdrawValue));
+      setWithdrawValue("");
+      handleOpenSuccessModal();
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        handleOpenErrorModal();
+      } else {
+        console.error("Erro ao realizar o saque:", error);
+      }
+    }
   };
 
   return (
@@ -55,16 +94,20 @@ export function WithdrawMoney() {
                 borderRadius: "10px",
                 background: "var(--White-text, #FFF)",
                 boxShadow: "0px 0px 23px -1px rgba(50, 50, 50, 0.10)",
-
                 marginRight: "80px",
               }}
             >
-              <Card />
+              <CardBalance balance={balance} />
             </Box>
 
             <Box display="flex" gap="80px">
-              <CardDeposit />
-              <CardTransfer />
+              <Link to="/add" style={{ textDecoration: "none" }}>
+                <CardDeposit />
+              </Link>
+
+              <Link to="/transfer" style={{ textDecoration: "none" }}>
+                <CardTransfer />
+              </Link>
               <CardWithdraw isActive={true} />
             </Box>
           </Box>
@@ -87,6 +130,8 @@ export function WithdrawMoney() {
             id="outlined-required"
             label="Valor a ser sacado"
             placeholder="Digite o valor a ser sacado"
+            value={withdrawValue}
+            onChange={e => setWithdrawValue(e.target.value)}
             sx={{
               width: "870px",
               marginBottom: "24px",
@@ -94,7 +139,7 @@ export function WithdrawMoney() {
           />
           <Button
             variant="contained"
-            onClick={handleOpenErrorModal}
+            onClick={handleWithdrawMoney}
             sx={{
               width: "300px",
               height: "50px",
@@ -124,7 +169,6 @@ export function WithdrawMoney() {
               justifyContent: "center",
               alignItems: "center",
             }}
-            slots={{ backdrop: StyledBackdrop }}
           >
             <StyledModalContent>
               <Typography
@@ -137,27 +181,14 @@ export function WithdrawMoney() {
                 id="transfer-money-modal-description"
                 className="modal-description"
               >
-                Saque autorizado, aguarde a contagem das<br></br> notas e retire
-                o dinheiro.
+                Saque autorizado, aguarde a contagem das notas e retire o
+                dinheiro.
               </Typography>
               <Button
                 variant="contained"
                 onClick={handleCloseSuccessModal}
                 sx={{
-                  width: "330px",
-                  height: "50px",
-                  fontFamily: "Roboto",
-                  fontSize: "15px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
                   marginTop: "20px",
-                  background:
-                    "linear-gradient(90deg, #3956FF 0%, #294279 100%)",
-                  color: "#FFF",
-                  "&:hover": {
-                    background:
-                      "linear-gradient(90deg, #294279 0%, #3956FF 100%)",
-                  },
                 }}
               >
                 ENTENDI
@@ -175,7 +206,6 @@ export function WithdrawMoney() {
               justifyContent: "center",
               alignItems: "center",
             }}
-            slots={{ backdrop: StyledBackdrop }}
           >
             <StyledModalContent>
               <Typography id="error-modal-title" className="modal-title">
@@ -185,48 +215,14 @@ export function WithdrawMoney() {
                 id="error-modal-description"
                 className="modal-description"
               >
-                Sua conta está{" "}
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  sem saldo suficiente
-                </span>{" "}
-                para realizar o saque. Adicione dinheiro e tente novamente.
+                Sua conta está sem saldo suficiente para realizar o saque.
+                Adicione dinheiro e tente novamente.
               </Typography>
               <Box sx={{ display: "flex", gap: "16px" }}>
-                <Button
-                  variant="outlined"
-                  onClick={handleCloseErrorModal}
-                  sx={{
-                    width: "160px",
-                    height: "50px",
-                    borderColor: "#7A7A80",
-                    color: "#7A7A80",
-                    textTransform: "none",
-                    fontFamily: "Roboto",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                  }}
-                >
+                <Button variant="outlined" onClick={handleCloseErrorModal}>
                   CANCELAR
                 </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: "200px",
-                    height: "50px",
-                    fontFamily: "Roboto",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                    background:
-                      "linear-gradient(90deg, #3956FF 0%, #294279 100%)",
-                    color: "#FFF",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(90deg, #294279 0%, #3956FF 100%)",
-                    },
-                  }}
-                >
+                <Button variant="contained" onClick={handleAddMoney}>
                   ADICIONAR SALDO
                 </Button>
               </Box>

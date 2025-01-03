@@ -1,5 +1,6 @@
 import "./styles.css";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import SelectedListItem from "../../components/SelectedListItem";
 import Stack from "@mui/material/Stack";
@@ -9,16 +10,66 @@ import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import Modal from "@mui/material/Modal";
-import Card from "../../components/CardBalance"; // Card para saldo disponível
-import CardDeposit from "../../components/CardDeposit"; // Botão para depósito
-import CardTransfer from "../../components/CardTransfer"; // Botão para transferência
-import CardWithdraw from "../../components/CardWithdraw"; // Botão para saque
+import CardDeposit from "../../components/CardDeposit";
+import CardTransfer from "../../components/CardTransfer";
+import CardWithdraw from "../../components/CardWithdraw";
+import { api } from "../../services/api";
+import CardBalance from "../../components/CardBalance";
+import { useState, useEffect } from "react";
 
 export function AddMoney() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [value, setValue] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [balance, setBalance] = useState([]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get("/accounts/balance");
+        setBalance(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar balance:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
+
+  async function handleAddMoney() {
+    if (!value || !accountNumber) {
+      setModalMessage("Preencha todos os campos.");
+      setOpen(true);
+      return;
+    }
+
+    try {
+      const response = await api.post("/accounts/addMoney", {
+        value: Number(value),
+        accountNumber: Number(accountNumber),
+      });
+
+      setModalMessage("Depósito realizado com sucesso!");
+      setBalance(Number(balance) + Number(value));
+      setValue("");
+      setAccountNumber("");
+      setOpen(true);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setModalMessage(
+          "Conta inválida. Verifique o número da conta e tente novamente."
+        );
+      } else {
+        setModalMessage("Ocorreu um erro ao processar sua solicitação.");
+      }
+      setOpen(true);
+      console.error("Erro ao realizar o depósito:", error);
+    }
+  }
 
   return (
     <Stack spacing={2}>
@@ -50,13 +101,17 @@ export function AddMoney() {
                 marginRight: "80px",
               }}
             >
-              <Card />
+              <CardBalance balance={balance} />
             </Box>
 
             <Box display="flex" gap="80px">
               <CardDeposit isActive={true} />
-              <CardTransfer />
-              <CardWithdraw />
+              <Link to="/transfer" style={{ textDecoration: "none" }}>
+                <CardTransfer />
+              </Link>
+              <Link to="/withdraw" style={{ textDecoration: "none" }}>
+                <CardWithdraw />
+              </Link>
             </Box>
           </Box>
 
@@ -77,12 +132,14 @@ export function AddMoney() {
 
           <TextField
             id="outlined-required"
-            label="Dados da conta"
-            placeholder="Confirme os dados da sua conta"
+            label="Digite o número da conta"
+            placeholder="Confirme o número da sua conta"
             sx={{
               width: "870px",
               marginBottom: "24px",
             }}
+            value={accountNumber}
+            onChange={e => setAccountNumber(e.target.value)}
           />
           <TextField
             id="outlined-required"
@@ -92,10 +149,12 @@ export function AddMoney() {
               width: "870px",
               marginBottom: "24px",
             }}
+            value={value}
+            onChange={e => setValue(e.target.value)}
           />
           <Button
             variant="contained"
-            onClick={handleOpen}
+            onClick={handleAddMoney}
             sx={{
               width: "300px",
               height: "50px",
@@ -115,7 +174,6 @@ export function AddMoney() {
             ADICIONAR DINHEIRO
           </Button>
 
-          {/* Modal */}
           <Modal
             aria-labelledby="add-money-modal-title"
             aria-describedby="add-money-modal-description"
@@ -125,14 +183,15 @@ export function AddMoney() {
           >
             <StyledModalContent>
               <Typography id="add-money-modal-title" className="modal-title">
-                Dinheiro adicionado
+                {modalMessage === "Depósito realizado com sucesso!"
+                  ? "Sucesso!"
+                  : "Atenção"}
               </Typography>
               <Typography
                 id="add-money-modal-description"
                 className="modal-description"
               >
-                Seu dinheiro foi adicionado com sucesso à sua conta! Verifique
-                seu extrato.
+                {modalMessage}
               </Typography>
               <Button
                 variant="contained"

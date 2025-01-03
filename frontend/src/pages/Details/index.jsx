@@ -21,8 +21,6 @@ export function Details() {
           sx={{
             width: "308px",
             flexShrink: 0,
-            // marginLeft: "40px",
-            // marginRight: "40px",
             borderRadius: "10px",
             background: "#FFF",
             boxShadow: "0px 0px 23px -1px rgba(0, 0, 0, 0.10)",

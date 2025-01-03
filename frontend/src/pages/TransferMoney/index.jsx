@@ -1,5 +1,6 @@
 import "./styles.css";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import SelectedListItem from "../../components/SelectedListItem";
 import Stack from "@mui/material/Stack";
@@ -9,25 +10,65 @@ import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import Modal from "@mui/material/Modal";
-import Card from "../../components/CardBalance";
+import CardBalance from "../../components/CardBalance";
 import CardDeposit from "../../components/CardDeposit";
 import CardTransfer from "../../components/CardTransfer";
 import CardWithdraw from "../../components/CardWithdraw";
+import { api } from "../../services/api";
+import { useState, useEffect } from "react";
 
 export function TransferMoney() {
-  const [isSuccessModalOpen, setSuccessModalOpen] = React.useState(false);
-  const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [destinationAccount, setDestinationAccount] = useState("");
+  const [transferValue, setTransferValue] = useState("");
+  const [balance, setBalance] = useState([]);
 
-  const handleOpenSuccessModal = () => setSuccessModalOpen(true);
-  const handleCloseSuccessModal = () => setSuccessModalOpen(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const handleOpenErrorModal = () => setErrorModalOpen(true);
-  const handleCloseErrorModal = () => setErrorModalOpen(false);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get("/accounts/balance");
+        setBalance(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar saldo:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
 
-  const handleAddMoney = () => {
-    console.log("Redirecionar para a página de adicionar saldo");
-    setErrorModalOpen(false);
-  };
+  async function handleTransferMoney() {
+    if (!destinationAccount || !transferValue) {
+      setModalMessage("Preencha todos os campos.");
+      handleOpen();
+      return;
+    }
+
+    try {
+      const response = await api.post("/accounts/transfer", {
+        accountTo: Number(destinationAccount),
+        value: Number(transferValue),
+      });
+
+      setModalMessage("Transferência realizada com sucesso!");
+      setBalance(Number(balance) - Number(transferValue));
+      setDestinationAccount("");
+      setTransferValue("");
+      handleOpen();
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        setModalMessage("Conta de destino inválida. Verifique os dados.");
+      } else if (error.response && error.response.status === 400) {
+        setModalMessage("Saldo insuficiente para realizar a transferência.");
+      } else {
+        setModalMessage("Ocorreu um erro ao processar sua solicitação.");
+      }
+      handleOpen();
+      console.error("Erro ao realizar transferência:", error);
+    }
+  }
 
   return (
     <Stack spacing={2}>
@@ -59,13 +100,17 @@ export function TransferMoney() {
                 marginRight: "80px",
               }}
             >
-              <Card />
+              <CardBalance balance={balance} />
             </Box>
 
             <Box display="flex" gap="80px">
-              <CardDeposit />
+              <Link to="/add" style={{ textDecoration: "none" }}>
+                <CardDeposit />
+              </Link>
               <CardTransfer isActive={true} />
-              <CardWithdraw />
+              <Link to="/withdraw" style={{ textDecoration: "none" }}>
+                <CardWithdraw />
+              </Link>
             </Box>
           </Box>
 
@@ -84,26 +129,30 @@ export function TransferMoney() {
           </Typography>
 
           <TextField
-            id="outlined-required"
+            id="destination-account"
             label="Conta de destino"
             placeholder="Insira os dados da conta de destino"
             sx={{
               width: "870px",
               marginBottom: "24px",
             }}
+            value={destinationAccount}
+            onChange={e => setDestinationAccount(e.target.value)}
           />
           <TextField
-            id="outlined-required"
+            id="transfer-value"
             label="Valor a ser transferido"
             placeholder="Digite o valor a ser transferido"
             sx={{
               width: "870px",
               marginBottom: "24px",
             }}
+            value={transferValue}
+            onChange={e => setTransferValue(e.target.value)}
           />
           <Button
             variant="contained"
-            onClick={handleOpenErrorModal} // Troque para handleOpenSuccessModal conforme necessário
+            onClick={handleTransferMoney}
             sx={{
               width: "300px",
               height: "50px",
@@ -126,13 +175,8 @@ export function TransferMoney() {
           <Modal
             aria-labelledby="transfer-money-modal-title"
             aria-describedby="transfer-money-modal-description"
-            open={isSuccessModalOpen}
-            onClose={handleCloseSuccessModal}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            open={open}
+            onClose={handleClose}
             slots={{ backdrop: StyledBackdrop }}
           >
             <StyledModalContent>
@@ -140,17 +184,19 @@ export function TransferMoney() {
                 id="transfer-money-modal-title"
                 className="modal-title"
               >
-                Transferência realizada
+                {modalMessage === "Transferência realizada com sucesso!"
+                  ? "Sucesso!"
+                  : "Atenção"}
               </Typography>
               <Typography
                 id="transfer-money-modal-description"
                 className="modal-description"
               >
-                Seu dinheiro foi transferido com sucesso para a conta informada.
+                {modalMessage}
               </Typography>
               <Button
                 variant="contained"
-                onClick={handleCloseSuccessModal}
+                onClick={handleClose}
                 sx={{
                   width: "330px",
                   height: "50px",
@@ -170,75 +216,6 @@ export function TransferMoney() {
               >
                 ENTENDI
               </Button>
-            </StyledModalContent>
-          </Modal>
-
-          <Modal
-            aria-labelledby="error-modal-title"
-            aria-describedby="error-modal-description"
-            open={isErrorModalOpen}
-            onClose={handleCloseErrorModal}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            slots={{ backdrop: StyledBackdrop }}
-          >
-            <StyledModalContent>
-              <Typography id="error-modal-title" className="modal-title">
-                Erro ao transferir
-              </Typography>
-              <Typography
-                id="error-modal-description"
-                className="modal-description"
-              >
-                Sua conta está{" "}
-                <span style={{ color: "red", fontWeight: "bold" }}>
-                  sem saldo suficiente
-                </span>{" "}
-                para realizar a transferência. Adicione dinheiro e tente
-                novamente.
-              </Typography>
-              <Box sx={{ display: "flex", gap: "16px" }}>
-                <Button
-                  variant="outlined"
-                  // onClick={handleCloseErrorModal}
-                  sx={{
-                    width: "160px",
-                    height: "50px",
-                    borderColor: "#7A7A80",
-                    color: "#7A7A80",
-                    textTransform: "none",
-                    fontFamily: "Roboto",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                  }}
-                >
-                  CANCELAR
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    width: "200px",
-                    height: "50px",
-                    fontFamily: "Roboto",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                    background:
-                      "linear-gradient(90deg, #3956FF 0%, #294279 100%)",
-                    color: "#FFF",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(90deg, #294279 0%, #3956FF 100%)",
-                    },
-                  }}
-                >
-                  Adicionar Saldo
-                </Button>
-              </Box>
             </StyledModalContent>
           </Modal>
         </Box>
