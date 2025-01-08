@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AddMoney } from "../pages/AddMoney";
 import { Details } from "../pages/Details";
@@ -14,6 +14,8 @@ export function AppRoutes() {
       <Route path="/add" element={<AddMoney />} />
       <Route path="/transfer" element={<TransferMoney />} />
       <Route path="/withdraw" element={<WithdrawMoney />} />
+
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

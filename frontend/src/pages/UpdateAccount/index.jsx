@@ -11,16 +11,23 @@ import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import { styled, css } from "@mui/system";
 import Modal from "@mui/material/Modal";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { api } from "../../services/api";
 
 export function UpdateAccount() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, signOut } = useAuth();
 
-  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [balanceModal, setBalanceModal] = useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const [name, setName] = useState(user.name);
-  // const [email, setEmail] = useState(user.email);
   const [Rg, setRg] = useState(user.Rg);
   const [Cpf, setCpf] = useState(user.Cpf);
   const [data_de_nascimento, setData_de_nascimento] = useState(
@@ -28,6 +35,7 @@ export function UpdateAccount() {
   );
   const [passwordOld, setPasswordOld] = useState();
   const [passwordNew, setPasswordNew] = useState();
+  const accountsId = user.accountsId;
 
   async function handleUpdate() {
     const user = {
@@ -37,9 +45,40 @@ export function UpdateAccount() {
       data_de_nascimento,
       password: passwordNew,
       old_password: passwordOld,
+      accountsId,
     };
     await updateProfile({ user });
   }
+
+  const handleDeleteAccount = async () => {
+    const userId = user.id;
+
+    try {
+      await api.delete(`/accounts/accountsClosure`, {
+        data: { userId, accountNumber: user.accountsId },
+      });
+
+      setOpen(false);
+      setSuccessModal(true);
+
+      setTimeout(() => {
+        setSuccessModal(false);
+        signOut();
+        navigate("/");
+      }, 2000);
+    } catch (error) {
+      console.error("Erro ao deletar conta:", error.response.data.error);
+
+      if (error.response?.data?.error?.includes("saldo positivo")) {
+        setOpen(false);
+        setBalanceModal(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log("Dados do usuário:", user);
+  }, [user]);
 
   return (
     <Stack spacing={2}>
@@ -81,7 +120,7 @@ export function UpdateAccount() {
             </Typography>
           </Box>
 
-          <Box marginBottom={"30px"}>
+          <Box marginBottom={"35px"}>
             <TextField
               id="outlined-required"
               label="Nome completo"
@@ -92,15 +131,6 @@ export function UpdateAccount() {
               value={name}
               onChange={e => setName(e.target.value)}
             />
-            {/* <TextField
-              id="outlined-required"
-              label="Email"
-              sx={{
-                width: "400px",
-              }}
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            /> */}
           </Box>
           <Box>
             <TextField
@@ -270,12 +300,46 @@ export function UpdateAccount() {
                 <Button
                   variant="contained"
                   color="error"
+                  onClick={handleDeleteAccount}
                   sx={{
                     backgroundColor: "#FF8587",
                     "&:hover": { backgroundColor: "#FF6F71" },
                   }}
                 >
                   Sim, quero deletar
+                </Button>
+              </Box>
+            </StyledModalContent>
+          </Modal>
+
+          <Modal
+            aria-labelledby="balance-modal-title"
+            aria-describedby="balance-modal-description"
+            open={balanceModal}
+            onClose={() => setBalanceModal(false)}
+            slots={{ backdrop: StyledBackdrop }}
+          >
+            <StyledModalContent>
+              <Typography id="balance-modal-title" className="modal-title">
+                Saldo em conta
+              </Typography>
+              <Typography
+                id="balance-modal-description"
+                className="modal-description"
+              >
+                Sua conta possui saldo positivo. <br />
+                Por favor, saque todo o saldo antes de tentar excluir sua conta.
+              </Typography>
+              <Box display="flex" justifyContent="center" marginTop={2}>
+                <Button
+                  variant="contained"
+                  onClick={() => setBalanceModal(false)}
+                  sx={{
+                    backgroundColor: "#FF8587",
+                    "&:hover": { backgroundColor: "#FF6F71" },
+                  }}
+                >
+                  Entendido
                 </Button>
               </Box>
             </StyledModalContent>

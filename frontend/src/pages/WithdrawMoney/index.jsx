@@ -18,9 +18,9 @@ import { api } from "../../services/api";
 import { useState, useEffect } from "react";
 
 export function WithdrawMoney() {
-  const [isSuccessModalOpen, setSuccessModalOpen] = React.useState(false);
-  const [isErrorModalOpen, setErrorModalOpen] = React.useState(false);
-  const [withdrawValue, setWithdrawValue] = React.useState("");
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
+  const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+  const [withdrawValue, setWithdrawValue] = useState("");
   const [balance, setBalance] = useState([]);
 
   const handleOpenSuccessModal = () => setSuccessModalOpen(true);
@@ -38,13 +38,14 @@ export function WithdrawMoney() {
     const fetchBalance = async () => {
       try {
         const response = await api.get("/accounts/balance");
-        setBalance(response.data.balance);
+        setBalance(response.data);
       } catch (error) {
         console.error("Erro ao buscar saldo:", error);
       }
     };
     fetchBalance();
   }, []);
+  console.log("balance 1", balance);
 
   const handleWithdrawMoney = async () => {
     if (!withdrawValue || Number(withdrawValue) <= 0) {
@@ -188,7 +189,20 @@ export function WithdrawMoney() {
                 variant="contained"
                 onClick={handleCloseSuccessModal}
                 sx={{
+                  width: "330px",
+                  height: "50px",
+                  fontFamily: "Roboto",
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
                   marginTop: "20px",
+                  background:
+                    "linear-gradient(90deg, #3956FF 0%, #294279 100%)",
+                  color: "#FFF",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(90deg, #294279 0%, #3956FF 100%)",
+                  },
                 }}
               >
                 ENTENDI

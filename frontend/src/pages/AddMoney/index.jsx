@@ -22,11 +22,13 @@ export function AddMoney() {
   const [modalMessage, setModalMessage] = useState("");
   const [value, setValue] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
+  const [balance, setBalance] = useState(0);
+
+  const user = localStorage.getItem("@whaticketbank:user");
+  const accountsId = JSON.parse(user).accountsId;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const [balance, setBalance] = useState([]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -34,7 +36,7 @@ export function AddMoney() {
         const response = await api.get("/accounts/balance");
         setBalance(response.data);
       } catch (error) {
-        console.error("Erro ao buscar balance:", error);
+        console.error("Erro ao buscar saldo:", error);
       }
     };
     fetchBalance();
@@ -47,14 +49,30 @@ export function AddMoney() {
       return;
     }
 
+    const depositValue = Number(value);
+    const currentBalance = Number(balance);
+
+    if (Number(accountNumber) !== accountsId) {
+      if (currentBalance < depositValue) {
+        setModalMessage("Saldo insuficiente para realizar o depósito.");
+        setOpen(true);
+        return;
+      }
+    }
+
     try {
-      const response = await api.post("/accounts/addMoney", {
-        value: Number(value),
+      await api.post("/accounts/addMoney", {
+        value: depositValue,
         accountNumber: Number(accountNumber),
       });
 
-      setModalMessage("Depósito realizado com sucesso!");
-      setBalance(Number(balance) + Number(value));
+      if (Number(accountNumber) === accountsId) {
+        setBalance(currentBalance + depositValue);
+        setModalMessage("Depósito realizado com sucesso na sua conta!");
+      } else {
+        setModalMessage("Depósito realizado com sucesso na conta de destino!");
+      }
+
       setValue("");
       setAccountNumber("");
       setOpen(true);
@@ -117,7 +135,6 @@ export function AddMoney() {
 
           <Typography
             sx={{
-              // flexGrow: 1,
               color: "#323232;",
               fontFamily: "Poppins, sans-serif",
               fontSize: "23px",
@@ -171,7 +188,7 @@ export function AddMoney() {
               },
             }}
           >
-            ADICIONAR DINHEIRO
+            DEPOSITAR DINHEIRO
           </Button>
 
           <Modal

@@ -27,7 +27,6 @@ export default function ResponsiveAppBar() {
         sx={{
           background: "linear-gradient(90deg, #3956FF 0%, #294279 100%)",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
-          // marginBottom: "50px",
         }}
       >
         <Toolbar>

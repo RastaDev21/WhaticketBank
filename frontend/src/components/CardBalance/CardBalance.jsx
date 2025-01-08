@@ -3,10 +3,8 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { api } from "../../services/api";
 
 export default function CardBalance({ balance }) {
-  console.log("🚀 ~ balance:", balance);
   return (
     <Card
       sx={{

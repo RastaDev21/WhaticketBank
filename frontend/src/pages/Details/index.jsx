@@ -5,13 +5,28 @@ import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import ResponsiveAppBar from "../../components/ResponsiveAppBar";
 import SelectedListItem from "../../components/SelectedListItem";
-import Card from "../../components/CardBalance";
+import CardBalance from "../../components/CardBalance";
 import Table from "../../components/Table";
 import CardDeposit from "../../components/CardDeposit";
 import CardTransfer from "../../components/CardTransfer";
 import CardWithdraw from "../../components/CardWithdraw";
+import { useState, useEffect } from "react";
+import { api } from "../../services/api";
 
 export function Details() {
+  const [balance, setBalance] = useState([]);
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get("/accounts/balance");
+        setBalance(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar balance:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
   return (
     <Stack spacing={2}>
       <ResponsiveAppBar />
@@ -41,7 +56,7 @@ export function Details() {
                 boxShadow: "0px 0px 23px -1px rgba(50, 50, 50, 0.10)",
               }}
             >
-              <Card />
+              <CardBalance balance={balance} />
             </Box>
 
             <Box display="flex" gap="80px">

@@ -23,6 +23,8 @@ export function TransferMoney() {
   const [destinationAccount, setDestinationAccount] = useState("");
   const [transferValue, setTransferValue] = useState("");
   const [balance, setBalance] = useState([]);
+  const user = localStorage.getItem("@whaticketbank:user");
+  const accountsId = JSON.parse(user).accountsId;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -52,8 +54,13 @@ export function TransferMoney() {
         value: Number(transferValue),
       });
 
-      setModalMessage("Transferência realizada com sucesso!");
-      setBalance(Number(balance) - Number(transferValue));
+      if (Number(destinationAccount) !== accountsId) {
+        setBalance(Number(balance) - Number(transferValue));
+        setModalMessage("Transferência realizada com sucesso!");
+      } else {
+        setModalMessage("Você não pode transferir pra sua propia conta ");
+      }
+
       setDestinationAccount("");
       setTransferValue("");
       handleOpen();

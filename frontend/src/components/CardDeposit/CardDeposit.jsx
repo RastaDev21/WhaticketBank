@@ -38,7 +38,6 @@ export default function CardDeposit({ isActive = false }) {
             marginTop: "14px",
           }}
         >
-          {/* SVG Background Circle */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="71"
@@ -54,7 +53,6 @@ export default function CardDeposit({ isActive = false }) {
             />
           </svg>
 
-          {/* SVG Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -82,7 +80,6 @@ export default function CardDeposit({ isActive = false }) {
           </svg>
         </Box>
 
-        {/* Title */}
         <Typography
           variant="h6"
           component="div"

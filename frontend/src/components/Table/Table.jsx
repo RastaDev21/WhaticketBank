@@ -27,7 +27,6 @@ export default function TransactionTable() {
     <TableContainer
       component={Paper}
       sx={{
-        // width: "1440px",
         height: "440px",
         borderRadius: "10px",
         overflow: "hidden",

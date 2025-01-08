@@ -247,7 +247,6 @@ export default function CardWithdraw({
             marginTop: "14px",
           }}
         >
-          {/* Circle SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="71"
@@ -263,7 +262,6 @@ export default function CardWithdraw({
             />
           </svg>
 
-          {/* Main Icon SVG */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

@@ -288,14 +288,14 @@ export function SignUp() {
         <Typography
           sx={{
             marginTop: 4,
-            marginBottom: 1, // Espaço inferior para evitar que fique grudado
+            marginBottom: 1,
             width: "418.158px",
             height: "56.763px",
             textAlign: "center",
             fontFamily: "Poppins",
             fontSize: "12px",
             fontWeight: 600,
-            lineHeight: "20px", // 166.667%
+            lineHeight: "20px",
             flexShrink: 0,
           }}
         >
